@@ -1,0 +1,108 @@
+@startuml
+' === Klassen für Jets und Modelle ===
+class Jetmodell {
+  - modell: String
+  - reichweite：Int
+  - sitzanzahl: Int
+  - höchstgeschwindigkeit: Int
+}
+
+class Jet {
+  - jet_ID: Int
+}
+
+class Hangar {
+  - hangar_ID: Int
+  - adresse: String
+  - max_kapazität: Int
+}
+
+Jet "0..*" -- "1" Jetmodell : gehört zu >
+Jet "0..*" -- "1" Hangar : stationiert >
+
+' === Kundenstruktur ===
+abstract class Kunde {
+  - kunde_ID: Int  
+}
+
+class Privatkunde {
+  - kundenname: String
+  - geburtsdatum: Date
+  - privatadresse: String
+}
+
+class Geschäftskunde {
+  - firmenname: String
+  - ansprechpartner: String
+}
+
+Privatkunde --|> Kunde
+Geschäftskunde --|> Kunde
+
+' === Mietvertrag ===
+class Mietvertrag {
+  - vertrag_ID: Int
+  - startzeitpunkt: Date
+  - endzeitpunkt: Date
+  - startort: String
+  - zielort: String
+  - kosten: Double
+}
+
+Kunde "1"-- "0..*" Mietvertrag : schließt ab >
+Mietvertrag "0..*" -- "1" Jet : verwendet >
+Mietvertrag "0..*" -- "1" Pilot : hat >
+
+' === Pilot ===
+class Pilot {
+  - piloten_ID: Int
+  - name: String
+  - lizenzklasse: String
+  - sprachen: List<String>  
+}
+
+Pilot "0..*" -- "0..*" Jetmodell : lizenziert > 
+
+
+' === Flugbegleiter ===
+class Flugbegleiter {
+  - personalnummer: Int
+  - name: String
+  - sprachen: List<String>
+}
+
+' === Zusatzservices ===
+abstract class Zusatzservice {
+  - service_ID: Int
+  - bezeichnung: String
+  - beschreibung: String
+  - preis: Double
+}
+
+Mietvertrag "0..*" -- "0..*" Flugbegleiter : beinhaltet >
+Mietvertrag "0..*" -- "0..*" Zusatzservice : enthält > 
+
+class Catering    
+class Limousinenservice
+class MobilerMeetingraum
+
+Catering --|> Zusatzservice
+Limousinenservice --|> Zusatzservice
+MobilerMeetingraum --|> Zusatzservice
+
+' === Wartung ===
+class Wartung {
+  - wartung_ID: Int  
+  - datum: Date
+  - maßnahme: String  
+}
+
+class Wartungsstation {
+  - station_ID: Int
+  - name: String
+  - personal: String
+}
+
+Jet "1" --  "0..*" Wartung : hat >
+Wartung "0..*" -- "1" Wartungsstation : erfolgt durch >
+@enduml 
